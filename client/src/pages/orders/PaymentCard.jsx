@@ -3,6 +3,7 @@ import useOrder from "../../hooks/orders/useOrder";
 import { useSelector } from "react-redux";
 import Spinner from "../../components/loading/Spinner";
 import { notify } from "../../utils/helper/notification";
+import GooglePayButton from "@google-pay/button-react"; 
 
 const PaymentCard = ({
   totalAmount,
@@ -69,7 +70,7 @@ const PaymentCard = ({
         </p>
       </div>
       <div className="w-full flex justify-center items-center">
-        <button
+        {/* <button
           className="hover:bg-black    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 py-5 w-96 md:w-full bg-gray-800 text-base font-medium leading-4 text-white flex flex-row justify-center items-center"
           onClick={() => {
             if (cartData.length === 0) {
@@ -81,7 +82,61 @@ const PaymentCard = ({
         >
           {isPaymentInitiated && <Spinner width="w-6" color="#ffffff" />}
           Pay Now
-        </button>
+        </button> */}
+        <br/>
+        <GooglePayButton
+          environment="TEST"
+          buttonColor="black"
+          buttonType="long"
+          buttonSizeMode="fill"
+          paymentRequest={{
+            apiVersion: 2,
+            apiVersionMinor: 0,
+            allowedPaymentMethods: [
+              {
+                type: 'CARD',
+                parameters: {
+                  allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+                  allowedCardNetworks: ['MASTERCARD', 'VISA'],
+                },
+                tokenizationSpecification: {
+                  type: 'PAYMENT_GATEWAY',
+                  parameters: {
+                    gateway: 'example',
+                    gatewayMerchantId: 'exampleGatewayMerchantId',
+                  },
+                },
+              },
+            ],
+            merchantInfo: {
+              merchantId: '12345678901234567890',
+              merchantName: 'FarmConnect',
+            },
+            transactionInfo: {
+              totalPriceStatus: 'FINAL',
+              totalPriceLabel: 'Total',
+              totalPrice: (totalAmount + (totalAmount >= limitForFreeDelivery ? 0 : deliveryCharge)).toFixed(2),
+              currencyCode: 'INR',
+              countryCode: 'IN',
+            },
+            shippingAddressRequired: true,
+            callbackIntents: ['PAYMENT_AUTHORIZATION']
+          }}
+          onLoadPaymentData={(paymentData) => {
+            console.log('Payment Successful', paymentData);
+            orderNow();
+          }}
+          onPaymentAuthorized={(paymentData) => {
+            console.log('Payment Authorised Success', paymentData);
+            return { transactionState: 'SUCCESS'};
+          }}
+          existingPaymentMethodRequired={false}
+          onError={(error) => {
+            console.error('Payment Error:', error);
+            notify('Payment failed. Please try again.', 'error');
+          }}
+        />
+        
       </div>
     </div>
   );
