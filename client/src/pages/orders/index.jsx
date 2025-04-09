@@ -7,10 +7,15 @@ import Heading from "../../components/heading/Heading";
 import CustomerLocationSelector from "./CustomerLocationSelector";
 import OrderSummary from "./OrderSummary";
 import PaymentCard from "./PaymentCard";
+import { useCookies } from "react-cookie";
+import { notify } from "../../utils/helper/notification";
+import { useNavigate } from "react-router-dom";
 
 function Order() {
   const deliveryCharge = 500;
   const limitForFreeDelivery = 1500;
+  const navigate = useNavigate();
+  const [cookies] = useCookies(["user_access_token"]);
 
   const cartData = useSelector((state) => state.cartReducer);
 
@@ -20,6 +25,14 @@ function Order() {
   const [customerLongitude, setCustomerLongitude] = useState(null);
 
   const userLocation = useSelector((state) => state.userLocationReducer);
+
+  useEffect(() => {
+    // Check if user is logged in
+    if (!cookies.user_access_token) {
+      notify("Please login as user to continue with checkout", "info");
+      navigate("/account/user");
+    }
+  }, [cookies.user_access_token, navigate]);
 
   useEffect(() => {
     let amount = 0;
@@ -33,6 +46,11 @@ function Order() {
     setCustomerLatitude(userLocation[1]);
     setCustomerLongitude(userLocation[0]);
   }, [userLocation]);
+
+  // If user is not logged in, don't render the order page
+  if (!cookies.user_access_token) {
+    return null;
+  }
 
   return (
     <>

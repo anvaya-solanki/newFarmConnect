@@ -56,5 +56,6 @@ router.put(
 // Get main product data by id 
 router.get("/mainProductData/:productId", productController.getMainProductDataById);
 
+router.get("/products", productController.getAllProducts);
 
 module.exports = router;

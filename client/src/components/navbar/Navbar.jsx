@@ -46,6 +46,13 @@ function Navbar() {
     };
   }, []);
 
+  // Close cart if seller logs in
+  useEffect(() => {
+    if (cookies.seller_access_token && openCart) {
+      setOpenCart(false);
+    }
+  }, [cookies.seller_access_token, openCart]);
+
   return (
     <nav className="bg-white border-gray-200 shadow">
       <div className="flex flex-wrap items-center justify-between mx-auto px-4 md:px-12 h-12">
@@ -69,8 +76,10 @@ function Navbar() {
               }
             }}
           >
-            <FaUserCircle />
-            <span className="text-sm font-medium hidden md:block">User</span>
+            <FaUserCircle className={cookies.user_access_token ? "text-blue-700" : "text-gray-400"} />
+            <span className="text-sm font-medium hidden md:block">
+              {cookies.user_access_token ? "User (Logged In)" : "User Login"}
+            </span>
             {cookies.user_access_token && (
               <div
                 className={`absolute ${
@@ -107,8 +116,10 @@ function Navbar() {
               }
             }}
           >
-            <SiSellfy />
-            <span className="text-sm font-medium hidden md:block">Seller</span>
+            <SiSellfy className={cookies.seller_access_token ? "text-green-700" : "text-gray-400"} />
+            <span className="text-sm font-medium hidden md:block">
+              {cookies.seller_access_token ? "Seller (Logged In)" : "Seller Login"}
+            </span>
             {cookies.seller_access_token && (
               <div
                 className={`absolute ${
@@ -143,16 +154,19 @@ function Navbar() {
               </div>
             )}
           </div>
-          <div
-            className="flex flex-row gap-1 justify-center items-center text-red-700 cursor-pointer"
-            onClick={() => {
-              setOpenCart(true);
-            }}
-          >
-            <AiOutlineShoppingCart />
-            <span className="text-sm font-medium hidden md:block">Cart</span>
-          </div>
-          {openCart && <Cart setOpenCart={setOpenCart} />}
+          {/* Show cart only when seller is not logged in */}
+          {!cookies.seller_access_token && (
+            <div
+              className="flex flex-row gap-1 justify-center items-center text-red-700 cursor-pointer"
+              onClick={() => {
+                setOpenCart(true);
+              }}
+            >
+              <AiOutlineShoppingCart />
+              <span className="text-sm font-medium hidden md:block">Cart</span>
+            </div>
+          )}
+          {openCart && !cookies.seller_access_token && <Cart setOpenCart={setOpenCart} />}
         </div>
       </div>
     </nav>

@@ -13,8 +13,14 @@ function Cart({ setOpenCart }) {
 
   useEffect(() => {
     let amount = 0;
-    cartData.map((item) => {
-      amount = amount + item.currentPrice;
+    cartData.forEach((item) => {
+      // Ensure we're adding valid numbers
+      const itemPrice = Number(item.currentPrice);
+      if (!isNaN(itemPrice)) {
+        amount += itemPrice;
+      } else {
+        console.error("Invalid price in cart item:", item);
+      }
     });
     setTotalAmount(amount);
   }, [cartData]);
@@ -78,7 +84,7 @@ function Cart({ setOpenCart }) {
                   <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                     <div className="flex justify-between text-base font-medium text-gray-900">
                       <p>Subtotal</p>
-                      <p>Rs.{totalAmount}</p>
+                      <p>Rs. {Number(totalAmount).toFixed(2)}</p>
                     </div>
                     <p className="mt-0.5 text-sm text-gray-500">
                       Shipping and taxes calculated at checkout.

@@ -37,7 +37,7 @@ function CartCard({item}) {
             <h3>
               <a href="#">{item.name}</a>
             </h3>
-            <p className="ml-4">Rs. {item.currentPrice}</p>
+            <p className="ml-4">Rs. {Number(item.currentPrice).toFixed(2)}</p>
           </div>
           <p className="mt-1 text-sm text-gray-500">{item.brand}</p>
         </div>

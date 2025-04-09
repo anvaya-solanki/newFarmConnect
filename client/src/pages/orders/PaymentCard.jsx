@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 import Spinner from "../../components/loading/Spinner";
 import { notify } from "../../utils/helper/notification";
 import GooglePayButton from "@google-pay/button-react"; 
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 const PaymentCard = ({
   totalAmount,
@@ -13,30 +15,79 @@ const PaymentCard = ({
   customerLongitude,
 }) => {
   const cartData = useSelector((state) => state.cartReducer);
-
+  const [cookies] = useCookies(["user_access_token"]);
+  const navigate = useNavigate();
   const { orderProduct, isLoading: isPaymentInitiated } = useOrder();
 
   const orderNow = async () => {
+    // Check if user is authenticated
+    if (!cookies.user_access_token) {
+      notify("Please login to continue with checkout", "info");
+      navigate("/account/user");
+      return;
+    }
+
+    // Check if location is available
     if (customerLatitude === null || customerLongitude === null) {
       notify("Please allow the location access", "info");
       return;
     }
 
-    const orderData = [];
-    for (const element of cartData) {
-      orderData.push({
-        productId: element._id,
-        orderQty: element.qty,
-        orderLocation: {
-          coordinates: [customerLongitude, customerLatitude]
-        },
-        sellerId: element.sellerId,
-      });
+    // Check if cart has items
+    if (cartData.length === 0) {
+      notify("Your cart is empty", "info");
+      return;
     }
 
-    // console.log("Order data:", orderData);
+    try {
+      const orderData = [];
+      let hasMissingSellerId = false;
+      
+      for (const element of cartData) {
+        // Ensure all required data is present
+        if (!element._id) {
+          notify("Some products in your cart are invalid", "error");
+          return;
+        }
+        
+        // Check if sellerId is missing
+        if (!element.sellerId) {
+          console.error(`Missing sellerId for product ${element.name} (${element._id})`);
+          hasMissingSellerId = true;
+        }
+        
+        orderData.push({
+          productId: element._id,
+          orderQty: element.qty,
+          orderLocation: {
+            coordinates: [customerLongitude, customerLatitude]
+          },
+          sellerId: element.sellerId,
+        });
+      }
+      
+      // Log cart data for debugging
+      console.log("Order data details:", orderData.map(item => ({
+        productId: item.productId,
+        sellerId: item.sellerId,
+        qty: item.orderQty
+      })));
+      
+      // Warn if any sellerId is missing
+      if (hasMissingSellerId) {
+        notify("Some products in your cart are missing seller information. Please remove them and add them again.", "error");
+        return;
+      }
 
-    orderProduct(orderData);
+      // Log for debugging
+      console.log("Placing order with user token:", cookies.user_access_token ? "Token exists" : "No token");
+      console.log("Order data:", orderData);
+
+      await orderProduct(orderData);
+    } catch (error) {
+      console.error("Error placing order:", error);
+      notify("There was an error processing your order. Please try again.", "error");
+    }
   };
 
   return (

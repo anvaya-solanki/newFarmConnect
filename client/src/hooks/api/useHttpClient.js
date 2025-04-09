@@ -69,29 +69,50 @@ const useHttpClient = () => {
   ) => {
     if (requestType === "user" && !cookies.user_access_token) {
       notify("Please login as user to continue", "info");
+      window.location.href = "/account/user";
       return false;
     }
 
     if (requestType === "seller" && !cookies.seller_access_token) {
       notify("Please login as seller to continue", "info");
+      window.location.href = "/account/seller";
       return false;
     }
 
-    return await sendRequest(
-      url,
-      method,
-      body,
-      {
-        authorization: `Bearer ${
-          requestType === "user"
-            ? cookies.user_access_token
-            : cookies.seller_access_token
-        }`,
-        ...headers,
-      },
-      showToast,
-      withCredentials
-    );
+    try {
+      const token = requestType === "user" 
+        ? cookies.user_access_token 
+        : cookies.seller_access_token;
+      
+      console.log(`Using ${requestType} token for ${url}:`, token ? "Token exists" : "No token");
+      
+      return await sendRequest(
+        url,
+        method,
+        body,
+        {
+          authorization: `Bearer ${token}`,
+          ...headers,
+        },
+        showToast,
+        withCredentials
+      );
+    } catch (error) {
+      console.error(`Auth request failed for ${url}:`, error);
+      
+      if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+        if (requestType === "user") {
+          setCookie("user_access_token", "", {expires: new Date(0)});
+          notify("Your session has expired. Please login again.", "error");
+          window.location.href = "/account/user";
+        } else {
+          setCookie("seller_access_token", "", {expires: new Date(0)});
+          notify("Your session has expired. Please login again.", "error");
+          window.location.href = "/account/seller";
+        }
+      }
+      throw error;
+    }
   };
 
   return { isLoading, sendRequest, sendAuthorizedRequest, setIsLoading };
