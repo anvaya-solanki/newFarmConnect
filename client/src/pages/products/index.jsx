@@ -286,7 +286,6 @@ function Product() {
 
   return (
     <>
-<<<<<<< HEAD
       {/* View toggle button */}
       <div className="flex justify-center mt-4">
         <div className="inline-flex rounded-md shadow-sm" role="group">
@@ -305,45 +304,6 @@ function Product() {
             <FaMapMarkerAlt className="inline mr-2" /> Map View
           </button>
         </div>
-=======
-      <div className="w-2/12 mx-10 mt-10">
-        <div className="flex justify-between mb-2">
-          <h4 className="text-lg font-medium ">Delivery Range</h4>
-          <span className="text-red-900">{deliveryRange} km</span>
-        </div>
-        <div className="relative">
-          <input 
-            type="range" 
-            min="1" 
-            max="1500" 
-            value={deliveryRange}
-            onChange={(e) => setDeliveryRange(e.target.value)}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-red-900"
-            style={{
-              background: `linear-gradient(to right, rgb(127, 29, 29) 0%, rgb(127, 29, 29) ${(deliveryRange/1500)*100}%, #e5e7eb ${(deliveryRange/1500)*100}%, #e5e7eb 100%)`
-            }}
-          />
-        </div>
-        <div className="flex justify-between text-sm text-gray-600">
-          <span>1km</span>
-          <span>1500km</span>
-        </div>
-    
-        
-        <button className="bg-red-900 text-white px-4 py-2 rounded-md mt-4 hover:bg-red-700 transition duration-200" onClick={()=>{filterProducts()}}>apply filter</button>
-      </div>
-
-      <div className="grid gap-4 md:gap-8 my-6 md:my-12 grid-cols-2 lg:grid-cols-4 w-11/12 mx-auto">
-        {deliverableProductData &&
-          deliverableProductData.length > 0 &&
-          deliverableProductData.map((data, index) => (
-            <ProductCard data={data} key={index} addOverlay={false} />
-          ))}
-        {nonDeliverableProductData && nonDeliverableProductData.length > 0 && nonDeliverableProductData.map((data, index) => (
-          <ProductCard data={data} key={index} addOverlay={true} />
-        ))}
-        {isLoading && <ProductSkeleton noOfBoxes={products_per_page} />}
->>>>>>> 976921a9d338328bdd073cc7bc5bb7adcf43c75f
       </div>
 
       {/* Map view */}

@@ -18,6 +18,7 @@ import SellerProducts from "./pages/seller_dashboard/SellerProducts";
 import SellerOrderRequests from "./pages/seller_dashboard/SellerOrderRequests";
 import SellerFAQs from "./pages/seller_dashboard/SellerFAQs";
 import CropSenseAI from "./pages/seller_dashboard/CropSenseAI";
+import AdminDashboard from './pages/admin/AdminDashboard'
 
 function App() {
   return (
@@ -81,9 +82,11 @@ function App() {
           />
           <Route exact path="/orders" element={<Order />} />
           <Route exact path="/map" element={<LeafletMap />} />
+          <Route exact path="/admin" element={<AdminDashboard />} /> 
         </Routes>
         {/* </div> */}
       </Router>
+      
       <Analytics />
     </>
   );
