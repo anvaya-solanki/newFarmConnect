@@ -125,12 +125,31 @@ function LoginAndSignup() {
               toUpdate={"password"}
             />
 
-            <SubmitButton
+            {/* <SubmitButton
               text={isSignInForm ? "Sign In" : "Create account"}
               bgColor={type === "seller" ? "bg-green-700" : "bg-blue-600"}
               hoverBgColor={type === "seller" ? "bg-green-600" : "bg-blue-700"}
               isLoading={isLoading}
+            /> */}
+            <SubmitButton
+              text={isSignInForm ? "Sign In" : "Create account"}
+              bgColor={
+                type === "seller"
+                  ? "bg-green-700"
+                  : type === "admin"
+                  ? "bg-purple-700"
+                  : "bg-blue-600"
+              }
+              hoverBgColor={
+                type === "seller"
+                  ? "bg-green-600"
+                  : type === "admin"
+                  ? "bg-purple-600"
+                  : "bg-blue-700"
+              }
+              isLoading={isLoading}
             />
+
             <FormSwitch
               type={type}
               isSignInForm={isSignInForm}
