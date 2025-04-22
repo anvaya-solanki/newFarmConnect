@@ -147,7 +147,7 @@ const AdminDashboard = () => {
 
   const fetchSalesData = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/admin/sales");
+      const res = await axios.get("https://ticket-backend-8.onrender.com/api/admin/sales");
       setSalesData(res.data);
     } catch (error) {
       console.error("Error fetching sales data:", error);
@@ -159,7 +159,7 @@ const AdminDashboard = () => {
   const fetchCategoryData = async (category) => {
     try {
       if (category === "") return;
-      const res = await axios.get(`http://localhost:8080/api/admin/sales/${category}`);
+      const res = await axios.get(`https://ticket-backend-8.onrender.com/api/admin/sales/${category}`);
       setCategoryData(res.data);
     } catch (error) {
       console.error("Error fetching category data:", error);
