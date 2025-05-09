@@ -41,6 +41,9 @@ export const CROP_PREDICTOR = (
 ) =>
   `/ai/crops?soil=${soil}&altitude=${altitude}&temperature=${temperature}&humidity=${humidity}&rainfall=${rainfall}`;
 
+// Seller Chatbot
+export const SELLER_CHATBOT = `/ai/seller-chat`;
+
 // Seller Graphs
 export const GRAPH = `/graph`;
 

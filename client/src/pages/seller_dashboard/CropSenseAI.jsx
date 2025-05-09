@@ -17,7 +17,9 @@ const CropSenseAI = () => {
   });
 
   const cropPrediction = async () => {
+    console.log(`waiting for res from frontend`);
     let res = await predictCrops(formData);
+    console.log(`res from frontend`, res);
     setPrediction(res);
   };
 
