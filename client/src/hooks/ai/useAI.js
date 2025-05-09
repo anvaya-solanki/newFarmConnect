@@ -6,6 +6,7 @@ const useAI = () => {
   const { sendRequest, isLoading } = useHttpClient();
 
   const predictCrops = async (formData) => {
+    console.log(`sending formData to backend`, formData);
     const resp = await sendRequest(
       CROP_PREDICTOR(
         formData.soil,
@@ -15,12 +16,12 @@ const useAI = () => {
         formData.rainfall
       ),
       "GET",
-      null, 
+      null,
       null,
       false
     );
-    console.log(resp);
-    return resp.data.message;
+    console.log("Response from backend:", resp);
+    return resp.data.prediction;
   };
 
   return { isLoading, predictCrops };

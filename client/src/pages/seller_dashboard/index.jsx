@@ -14,6 +14,7 @@ import SellerOverview from "./SellerOverview";
 import { RiBardFill } from "react-icons/ri";
 import CropSenseAI from "./CropSenseAI";
 import { useCookies } from "react-cookie";
+import SellerChatbot from "../../components/chatbot/SellerChatbot";
 
 
 const links = [
@@ -92,6 +93,7 @@ const NewSellerDashboard = () => {
         <Outlet />
         {/* {links[selected].renderComponent} */}
       </div>
+      <SellerChatbot />
     </div>
   );
 };
